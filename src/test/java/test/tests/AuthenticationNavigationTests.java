@@ -11,6 +11,8 @@ import test.pages.LoginPage;
 import test.utils.ExcelUtils;
 
 public class AuthenticationNavigationTests extends BaseTest {
+    private static String registeredEmail;
+    private static String registeredPassword;
 
     @DataProvider(name = "tc01")
     public Object[][] tc01() throws IOException {
@@ -47,9 +49,13 @@ public class AuthenticationNavigationTests extends BaseTest {
         AccountPage accountPage = new AccountPage(driver);
         accountPage.openMyAccountRegister();
 
+        String email = toUniqueEmail(data.get("email"));
+        registeredEmail = email;
+        registeredPassword = data.get("password");
+
         accountPage.enterFirstName(data.get("firstName"));
         accountPage.enterLastName(data.get("lastName"));
-        accountPage.enterEmail(data.get("email"));
+        accountPage.enterEmail(email);
         accountPage.enterTelephone(data.get("telephone"));
         accountPage.enterPassword(data.get("password"));
         accountPage.enterConfirmPassword(data.get("confirmPassword"));
@@ -88,7 +94,7 @@ public class AuthenticationNavigationTests extends BaseTest {
     public void tc03_valid_login(Map<String, String> data) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.openMyAccountLogin();
-        loginPage.login(data.get("email"), data.get("password"));
+        loginPage.login(resolveLoginEmail(data.get("email")), resolveLoginPassword(data.get("password")));
 
         AccountPage accountPage = new AccountPage(driver);
         Assert.assertEquals(accountPage.getAccountHeader(), "My Account");
@@ -108,7 +114,7 @@ public class AuthenticationNavigationTests extends BaseTest {
     public void tc05_change_currency(Map<String, String> data) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.openMyAccountLogin();
-        loginPage.login(data.get("email"), data.get("password"));
+        loginPage.login(resolveLoginEmail(data.get("email")), resolveLoginPassword(data.get("password")));
 
         CatalogPage catalogPage = new CatalogPage(driver);
         catalogPage.openShowAllDesktops();
@@ -123,7 +129,7 @@ public class AuthenticationNavigationTests extends BaseTest {
     public void tc06_breadcrumb_and_left_menu(Map<String, String> data) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.openMyAccountLogin();
-        loginPage.login(data.get("email"), data.get("password"));
+        loginPage.login(resolveLoginEmail(data.get("email")), resolveLoginPassword(data.get("password")));
 
         CatalogPage catalogPage = new CatalogPage(driver);
         catalogPage.openTopCategory("Tablets");
@@ -131,5 +137,23 @@ public class AuthenticationNavigationTests extends BaseTest {
         Assert.assertTrue(catalogPage.getBreadcrumbLastText().startsWith("Tablets"));
         Assert.assertTrue(catalogPage.getLeftMenuActiveText().startsWith("Tablets"));
         catalogPage.logout();
+    }
+
+    private static String toUniqueEmail(String email) {
+        String base = (email == null || email.isBlank()) ? "auto_user@example.com" : email.trim();
+        int atIndex = base.indexOf('@');
+        String stamp = String.valueOf(System.currentTimeMillis());
+        if (atIndex <= 0) {
+            return "auto_user_" + stamp + "@example.com";
+        }
+        return base.substring(0, atIndex) + "+" + stamp + base.substring(atIndex);
+    }
+
+    private static String resolveLoginEmail(String fallbackEmail) {
+        return registeredEmail != null ? registeredEmail : fallbackEmail;
+    }
+
+    private static String resolveLoginPassword(String fallbackPassword) {
+        return registeredPassword != null ? registeredPassword : fallbackPassword;
     }
 }
