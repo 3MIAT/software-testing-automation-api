@@ -1,29 +1,20 @@
 package com.automation.listeners;
 
 import com.automation.base.BaseTest;
+import com.automation.config.ConfigReader;
 import com.automation.utils.ScreenshotUtils;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 public class AllureListener implements ITestListener {
-
     @Override
     public void onTestFailure(ITestResult result) {
+        if (!ConfigReader.getBoolean("screenshot.on.failure", true)) {
+            return;
+        }
         Object testInstance = result.getInstance();
         if (testInstance instanceof BaseTest) {
-            ScreenshotUtils.takeScreenshot(
-                    ((BaseTest) testInstance).getDriver(),
-                    "Failure — " + result.getName()
-            );
+            ScreenshotUtils.attachScreenshot(((BaseTest) testInstance).getDriver(), "Failure - " + result.getName());
         }
     }
-
-    @Override
-    public void onTestStart(ITestResult result) {}
-
-    @Override
-    public void onTestSuccess(ITestResult result) {}
-
-    @Override
-    public void onTestSkipped(ITestResult result) {}
 }

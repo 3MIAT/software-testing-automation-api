@@ -17,6 +17,7 @@
         <selenium.version>4.18.1</selenium.version>
         <testng.version>7.9.0</testng.version>
         <allure.version>2.27.0</allure.version>
+        <aspectj.version>1.9.21</aspectj.version>
         <poi.version>5.2.5</poi.version>
         <webdrivermanager.version>5.7.0</webdrivermanager.version>
     </properties>
@@ -70,6 +71,13 @@
             <version>2.0.12</version>
         </dependency>
 
+        <!-- AspectJ Weaver (Allure runtime agent) -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -85,7 +93,7 @@
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.21/aspectjweaver-1.9.21.jar"
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                 </configuration>
             </plugin>
@@ -117,7 +125,7 @@
                                 <artifactItem>
                                     <groupId>org.aspectj</groupId>
                                     <artifactId>aspectjweaver</artifactId>
-                                    <version>1.9.21</version>
+                                    <version>${aspectj.version}</version>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

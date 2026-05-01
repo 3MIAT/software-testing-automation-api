@@ -1,19 +1,20 @@
 package com.automation.utils;
 
 import io.qameta.allure.Allure;
+import java.io.ByteArrayInputStream;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
-import java.io.ByteArrayInputStream;
+public final class ScreenshotUtils {
+    private ScreenshotUtils() {
+    }
 
-public class ScreenshotUtils {
-
-    /**
-     * Takes a screenshot and attaches it to the Allure report
-     */
-    public static void takeScreenshot(WebDriver driver, String name) {
+    public static void attachScreenshot(WebDriver driver, String attachmentName) {
+        if (driver == null) {
+            return;
+        }
         byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-        Allure.addAttachment(name, new ByteArrayInputStream(screenshot));
+        Allure.addAttachment(attachmentName, new ByteArrayInputStream(screenshot));
     }
 }
