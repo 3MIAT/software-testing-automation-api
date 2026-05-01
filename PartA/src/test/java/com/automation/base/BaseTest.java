@@ -23,7 +23,7 @@ public class BaseTest {
 
             ChromeOptions options = new ChromeOptions();
 
-            // Point to Chromium binary on Arch Linux
+
             options.setBinary("/usr/bin/chromium");
 
             // Recommended flags for stability on Linux
@@ -31,8 +31,7 @@ public class BaseTest {
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--disable-gpu");
             options.addArguments("--window-size=1920,1080");
-            // Uncomment below to run headless (no visible browser window):
-            // options.addArguments("--headless=new");
+
 
             driver = new ChromeDriver(options);
         } else {
@@ -53,9 +52,7 @@ public class BaseTest {
         }
     }
 
-    /**
-     * Exposes driver to AllureListener for screenshot capture
-     */
+
     public WebDriver getDriver() {
         return driver;
     }
